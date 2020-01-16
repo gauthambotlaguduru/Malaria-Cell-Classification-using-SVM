@@ -8,7 +8,7 @@ CONTAINS HE FOLLOWING:
 
 2. DATASET:
 	
-	HAS TWO FOLDERS -->> INFECTED and UNINFECTED
+	HAS TWO FOLDERS -->> https://www.kaggle.com/iarunava/cell-images-for-detecting-malaria
 
 3. OUTPUTIMGFILES:
 
