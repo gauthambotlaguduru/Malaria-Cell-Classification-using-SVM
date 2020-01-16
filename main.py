@@ -8,17 +8,14 @@ import clustering
 import lines
 
 
-imageI = [cv2.imread(file) for file in glob.glob("C:\\Users\\Gautham\\Documents\\PML\\cell_images\\PMLProject\\CreativeComponent\\Dataset\\Infected\\*.png")]
+image = [cv2.imread(file) for file in glob.glob("path\to\image\data\*.png")]
 
 S = []
 D = []
 C = []
 m = 24
 e = 3.57
-i = 0
-for img in imageI:
-    print(i)
-    i += 1
+for img in image:
     h, s, v = imgProc.colorConvert1(img)
     thresh = imgProc.threshold(s,50)
     whites = np.sum(thresh == 255)
@@ -37,36 +34,6 @@ for img in imageI:
     else:
         S.append([0])
 
-
-imageU = [cv2.imread(file) for file in glob.glob("C:\\Users\\Gautham\\Documents\\PML\\cell_images\\PMLProject\\CreativeComponent\\Dataset\\Uninfected\\*.png")]
-i = 0
-for img in imageU:
-    print(i)
-    i += 1    
-    h, s, v = imgProc.colorConvert1(img)
-    thresh = imgProc.threshold(s,50)
-    whites = np.sum(thresh == 255)
-    threshClustering = cv2.resize(threshClustering, (50, 50))
-    p = np.argwhere(threshClustering == 255)
-    p = p.tolist()
-    C.append(clustering.dbscan(m, e, p, img))
-    y, u, v = imgProc.colorConvert2(img)
-
-    if np.amax(u) - np.amin(u) >= 40:
-        D.append(0)
-    else:
-        D.append(1)
-
-    if whites != 0:
-        S.append([1])
-    else:
-        S.append([0])
-
-
-S = np.asarray(S)
-D = np.asarray(D)
-C = np.asarray(C)
-
 x = np.column_stack((S, D, C))
 
 l = x.shape[0]
@@ -77,19 +44,16 @@ yt = np.concatenate((y1t, y2t), axis = 0)
 
 [w, b] = svm.smo(x, yt)
 
+## Assuming 98 test images...
 y1 = np.ones((49, 1))
 y2 = -1*np.ones((49, 1))
 yp = np.concatenate((y1, y2), axis = 0)
 
-
-#w = [[1.], [0.]]
-#b = -0.43617021276595747
 error = 0
-p = "C:\\Users\\Gautham\\Documents\\PML\\cell_images\\PMLProject\\CreativeComponent\\Dataset\\test\\img"
+p = "path\to\test\folder\"
 for i in range(1, 98):
     path = p + str(i) + ".png"
     img = cv2.imread(path)
-    print(i)
     h, s, v = imgProc.colorConvert1(img)
     thresh = imgProc.threshold(s,50)
     whites = np.sum(thresh == 255)
